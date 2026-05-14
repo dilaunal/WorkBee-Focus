@@ -26,7 +26,23 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-st.markdown('<link rel="manifest" href="./manifest.json">', unsafe_allow_html=True)
+st.markdown(
+    """
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeelogo.png">
+    """,
+    unsafe_allow_html=True
+)
+
+
+st.markdown(
+    f"""
+    <link rel="icon" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeelogo.png" type="image/png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeelogo.png">
+    <link rel="manifest" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/manifest.json">
+    """,
+    unsafe_allow_html=True
+)
+
 
 # MongoDB Bağlantı Kurulumu - GÜVENLİ YÖNTEM
 @st.cache_resource
