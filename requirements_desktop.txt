@@ -1,0 +1,7 @@
+# Masaüstü uygulaması için gereken paketler
+streamlit>=1.52.0
+pandas>=2.0.0
+textblob>=0.19.0
+pyinstaller>=6.0.0
+pywebview>=4.0.0
+

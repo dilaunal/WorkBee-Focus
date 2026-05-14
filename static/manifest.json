@@ -1,0 +1,21 @@
+{
+  "short_name": "WorkBee",
+  "name": "WorkBee Focus: Yapay Zeka Destekli Odak Yönetimi",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2621/2621703.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2621/2621703.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#020617",
+  "theme_color": "#fbbf24",
+  "display": "standalone",
+  "orientation": "portrait"
+}
