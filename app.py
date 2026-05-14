@@ -26,6 +26,8 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+st.markdown('<link rel="manifest" href="./manifest.json">', unsafe_allow_html=True)
+
 # MongoDB Bağlantı Kurulumu - GÜVENLİ YÖNTEM
 @st.cache_resource
 def init_connection():
