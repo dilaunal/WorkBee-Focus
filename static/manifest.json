@@ -3,13 +3,13 @@
   "name": "WorkBee Focus: AI-Powered Task Management",
   "icons": [
     {
-      "src": "WorkBeelogo.png",
+      "src": "WorkBeeAppIcon.png",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any"
     },
     {
-      "src": "WorkBeelogo.png",
+      "src": "WorkBeeAppIcon.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any"

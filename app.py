@@ -26,13 +26,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-st.markdown(
-    """
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeelogo.png">
-    """,
-    unsafe_allow_html=True
-)
-
+st.markdown('<link rel="apple-touch-icon" href="./WorkBeeAppIcon.png">', unsafe_allow_html=True)
 
 st.markdown(
     f"""
