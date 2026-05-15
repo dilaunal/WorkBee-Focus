@@ -18,21 +18,18 @@ import random
 from pymongo import MongoClient
 import urllib.parse
 
-# --- 1. SAYFA YAPILANDIRMASI ---
+# 1. Sayfa Yapılandırması (Tarayıcı sekmesi için)
 st.set_page_config(
     page_title="WorkBee Focus",
-    layout="wide",
-    page_icon="WorkBee_Final_Logo.ico",
-    initial_sidebar_state="expanded",
+    page_icon="WorkBeeAppIcon.png",
+    layout="wide"
 )
 
-st.markdown('<link rel="apple-touch-icon" href="./WorkBeeAppIcon.png">', unsafe_allow_html=True)
-
+# 2. Mobil (iOS/Safari) İkon Zorlaması ve PWA Manifesti
 st.markdown(
-    f"""
-    <link rel="icon" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeelogo.png" type="image/png">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeelogo.png">
-    <link rel="manifest" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/manifest.json">
+    """
+    <link rel="apple-touch-icon" href="./WorkBeeAppIcon.png?v=2">
+    <link rel="manifest" href="./manifest.json?v=2">
     """,
     unsafe_allow_html=True
 )
