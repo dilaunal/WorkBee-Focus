@@ -28,30 +28,35 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* Üst dekorasyon çizgisini ve sağ üstteki Deploy/Toolbar menülerini tamamen uçur */
-    [data-testid="stHeader"] {display: none !important;}
+    /* Üst barın kendisini silmiyoruz, sadece arka planını şeffaf yapıp kalabalığı uçuruyoruz */
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+    }
+    
+    /* Sağ üstteki Fork, GitHub ikonları ve Deploy açılır menüsünü tamamen gizle */
     .stAppDeployDropdown {display: none !important;}
     [data-testid="stDecoration"] {display: none !important;}
     [data-testid="stToolbar"] {display: none !important;}
     footer {visibility: hidden !important;}
     
-    /* SOL MENÜ (SIDEBAR) İÇİN KESİN GÖRÜNÜRLÜK KURALLARI */
-    /* Sidebar'ın ana taşıyıcısını zorla görünür yap */
+    /* Kenar çubuğunun (Sidebar) mobilde ve masaüstünde kesinlikle görünmesini sağla */
     [data-testid="stSidebar"] {
         display: flex !important;
         visibility: visible !important;
     }
     
-    /* Mobilde sidebar'ı açıp kapatan o küçük ok butonunu zorla görünür yap */
+    /* Üst barın içindeki arayüz kalabalığını silerken menü butonunu koruma altına al */
     [data-testid="stSidebarCollapsedControl"] {
         display: flex !important;
         visibility: visible !important;
-        background-color: #fbbf24 !important; /* Arı sarısı yaparak mobilde belirginleştirdik */
-        border-radius: 5px;
+        background-color: #fbbf24 !important; /* Belirgin olması için arı sarısı */
+        color: #000000 !important; /* Ok işaretinin rengi siyah */
+        border-radius: 4px;
+        padding: 4px;
     }
     </style>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 
 # Safari'nin Streamlit sunucusundan etkilenmesini engelleyen kesin yönlendirme
