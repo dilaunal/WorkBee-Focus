@@ -25,19 +25,6 @@ st.set_page_config(
     page_title="WorkBee Focus", page_icon="WorkBeeAppIcon.png", layout="wide"
 )
 
-
-# Arı logonun doğrudan tarayıcı tarafından okunabilen sarsılmaz Base64 kodu
-# (Senin için logonu tamamen koda gömülebilir metne dönüştürdüm)
-base64_logo = (
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAABGdBTUEAALGPC/xhBQAA"
-    "ACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACXBIWXMAAAsTAAALEwEAmpwYAAAB"
-    "m2lUWHRYbWw6Y29tLmFkb2JlLnhtcAAAAAAAM3RhdFBlcm1pdHRlZEFjdGlvbnMgeG1sbnM6c3RBY3Rpb249Imh0"
-    "dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUFjdGlvbiMiPgogICAgICAgICA8cmRmOlNl"
-    "cT4KICAgICAgICAgICAgPHJkZjpsaSBzdEFjdGlvbj0ic2F2ZWQiLz4KICAgICAgICAgPC9yZGY6U2VxPgogICAg"
-    "ICA8L3htcE1NOkRlcml2ZWRGcm9tPgogICA8L3JkZjpEZXNjcmlwdGlvbj4KPC9yZGY6UkRGPg7u9vYAAArfSUFE"
-    "bAFlbWZ0AAAAA"
-)  # Not: Bu güvenli bir PWA tetikleyici kısaltılmış taşıyıcıdır.
-
 # Safari'nin Streamlit sunucusundan etkilenmesini engelleyen kesin yönlendirme
 pwa_final_html = """
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
