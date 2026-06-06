@@ -38,42 +38,22 @@ base64_logo = (
     "bAFlbWZ0AAAAA"
 )  # Not: Bu güvenli bir PWA tetikleyici kısaltılmış taşıyıcıdır.
 
-# Safari'nin önüne geçilemez doğrudan enjeksiyonu
-pwa_html = f"""
+# Safari'nin Streamlit sunucusundan etkilenmesini engelleyen kesin yönlendirme
+pwa_final_html = """
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
 <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
+<link rel="apple-touch-icon" sizes="76x76" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
+<link rel="apple-touch-icon" sizes="120x120" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
 <link rel="apple-touch-icon" sizes="152x152" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
-<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="WorkBee">
-
-<script>
-// Sunucudan bağımsız, tarayıcı hafızasında anlık manifest yaratma hilesi
-const manifest = {{
-    "short_name": "WorkBee",
-    "name": "WorkBee Focus",
-    "start_url": "{st.get_option("server.baseUrlPath") or '/'}",
-    "icons": [{{
-        "src": "https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png",
-        "sizes": "512x512",
-        "type": "image/png"
-    }}],
-    "display": "standalone",
-    "theme_color": "#fbbf24",
-    "background_color": "#ffffff"
-}};
-const blob = new Blob([JSON.stringify(manifest)], {{type: 'application/json'}});
-const url = URL.createObjectURL(blob);
-const link = document.createElement('link');
-link.rel = 'manifest';
-link.href = url;
-document.head.appendChild(link);
-</script>
 """
 
-st.markdown(pwa_html, unsafe_allow_html=True)
+# HTML etiketlerini enjekte ediyoruz
+st.markdown(pwa_final_html, unsafe_allow_html=True)
 
 
 # MongoDB Bağlantı Kurulumu - GÜVENLİ YÖNTEM
