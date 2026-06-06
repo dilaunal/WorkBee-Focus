@@ -23,70 +23,40 @@ st.set_page_config(
     page_title="WorkBee Focus",
     page_icon="WorkBeeAppIcon.png",
     layout="wide"
-
-)
-  # 1. Adımda kopyaladığın GitHub raw linkini buraya yapıştır:
-logo_github_url = "https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png"
-
-pwa_meta_html = f"""
-<!-- Apple (iOS) cihazlar için ana ekran ikonu -->
-<link rel="apple-touch-icon" href="{logo_github_url}">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="WorkBee">
-
-<!-- Android ve diğer cihazlar için dinamik manifest üretimi -->
-<script>
-const myManifest = {{
-  "short_name": "WorkBee",
-  "name": "WorkBee Focus",
-  "icons": [
-    {{
-      "src": "{logo_github_url}",
-      "sizes": "192x192",
-      "type": "image/png"
-    }},
-    {{
-      "src": "{logo_github_url}",
-      "sizes": "512x512",
-      "type": "image/png"
-    }}
-  ],
-  "start_url": ".",
-  "background_color": "#ffffff",
-  "theme_color": "#fbbf24",
-  "display": "standalone"
-}};
-
-const stringManifest = JSON.stringify(myManifest);
-const blob = new Blob([stringManifest], {{type: 'application/json'}});
-const manifestURL = URL.createObjectURL(blob);
-const manifestLink = document.createElement('link');
-manifestLink.rel = 'manifest';
-manifestLink.href = manifestURL;
-document.getElementsByTagName('head')[0].appendChild(manifestLink);
-</script>
-"""
-
-# HTML'i sayfaya enjekte ediyoruz
-st.markdown(pwa_meta_html, unsafe_allow_html=True)
-
-
-
-
-
-# 2. Safari'nin İnadını Kıran Kesin İkon Kodları
-st.markdown(
-    """
-    <link rel="icon" type="image/png" href="https://i.ibb.co/bRSZp2W8/WorkBeeAppIcon.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="https://i.ibb.co/bRSZp2W8/WorkBeeAppIcon.png">
-    <link rel="apple-touch-icon" sizes="512x512" href="https://i.ibb.co/bRSZp2W8/WorkBeeAppIcon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    """,
-    unsafe_allow_html=True
 )
 
+# Safari'nin beynini yıkayacak kesin PWA enjeksiyon kodu
+def patch_streamlit_head():
+    try:
+        # Bilgisayarındaki veya Streamlit Cloud'daki resmi index.html dosyasının yolunu buluyoruz
+        streamlit_dir = os.path.dirname(st.__file__)
+        index_path = os.path.join(streamlit_dir, "static", "index.html")
+        
+        if os.path.exists(index_path):
+            with open(index_path, "r", encoding="utf-8") as f:
+                html_content = f.read()
+            
+            # Enjekte edilecek gerçek ve sarsılmaz meta etiketleri
+            pwa_tags = """
+            <link rel="apple-touch-icon" sizes="192x192" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
+            <link rel="apple-touch-icon" sizes="512x512" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
+            <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
+            <meta name="apple-mobile-web-app-capable" content="yes">
+            <meta name="apple-mobile-web-app-status-bar-style" content="default">
+            <meta name="apple-mobile-web-app-title" content="WorkBee">
+            <title>WorkBee Focus</title>
+            """
+            
+            # Eğer kod daha önce eklenmediyse <head> etiketinin hemen altına ekle
+            if "WorkBee" not in html_content:
+                patched_content = html_content.replace("<head>", f"<head>{pwa_tags}")
+                with open(index_path, "w", encoding="utf-8") as f:
+                    f.write(patched_content)
+    except Exception as e:
+        pass
+
+# Fonksiyonu hemen çalıştırıyoruz
+patch_streamlit_head()
 
 # MongoDB Bağlantı Kurulumu - GÜVENLİ YÖNTEM
 @st.cache_resource
