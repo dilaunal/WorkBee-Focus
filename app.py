@@ -23,7 +23,57 @@ st.set_page_config(
     page_title="WorkBee Focus",
     page_icon="WorkBeeAppIcon.png",
     layout="wide"
+
 )
+  # 1. Adımda kopyaladığın GitHub raw linkini buraya yapıştır:
+logo_github_url = "https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png"
+
+pwa_meta_html = f"""
+<!-- Apple (iOS) cihazlar için ana ekran ikonu -->
+<link rel="apple-touch-icon" href="{logo_github_url}">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="WorkBee">
+
+<!-- Android ve diğer cihazlar için dinamik manifest üretimi -->
+<script>
+const myManifest = {{
+  "short_name": "WorkBee",
+  "name": "WorkBee Focus",
+  "icons": [
+    {{
+      "src": "{logo_github_url}",
+      "sizes": "192x192",
+      "type": "image/png"
+    }},
+    {{
+      "src": "{logo_github_url}",
+      "sizes": "512x512",
+      "type": "image/png"
+    }}
+  ],
+  "start_url": ".",
+  "background_color": "#ffffff",
+  "theme_color": "#fbbf24",
+  "display": "standalone"
+}};
+
+const stringManifest = JSON.stringify(myManifest);
+const blob = new Blob([stringManifest], {{type: 'application/json'}});
+const manifestURL = URL.createObjectURL(blob);
+const manifestLink = document.createElement('link');
+manifestLink.rel = 'manifest';
+manifestLink.href = manifestURL;
+document.getElementsByTagName('head')[0].appendChild(manifestLink);
+</script>
+"""
+
+# HTML'i sayfaya enjekte ediyoruz
+st.markdown(pwa_meta_html, unsafe_allow_html=True)
+
+
+
+
 
 # 2. Safari'nin İnadını Kıran Kesin İkon Kodları
 st.markdown(
