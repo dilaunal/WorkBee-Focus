@@ -20,61 +20,12 @@ import random
 from pymongo import MongoClient
 import urllib.parse
 
-# 1. Sayfa Yapılandırması
+# 1. Sayfa Yapılandırması (Eski, Tertemiz Orijinal Hali)
 st.set_page_config(
-    page_title="WorkBee Focus", page_icon="WorkBeeAppIcon.png", layout="wide"
+    page_title="WorkBee Focus",
+    page_icon="WorkBeeAppIcon.png",
+    layout="wide"
 )
-
-st.markdown(
-    """
-    <style>
-    /* Üst barın kendisini silmiyoruz, sadece arka planını şeffaf yapıp kalabalığı uçuruyoruz */
-    [data-testid="stHeader"] {
-        background-color: transparent !important;
-    }
-    
-    /* Sağ üstteki Fork, GitHub ikonları ve Deploy açılır menüsünü tamamen gizle */
-    .stAppDeployDropdown {display: none !important;}
-    [data-testid="stDecoration"] {display: none !important;}
-    [data-testid="stToolbar"] {display: none !important;}
-    footer {visibility: hidden !important;}
-    
-    /* Kenar çubuğunun (Sidebar) mobilde ve masaüstünde kesinlikle görünmesini sağla */
-    [data-testid="stSidebar"] {
-        display: flex !important;
-        visibility: visible !important;
-    }
-    
-    /* Üst barın içindeki arayüz kalabalığını silerken menü butonunu koruma altına al */
-    [data-testid="stSidebarCollapsedControl"] {
-        display: flex !important;
-        visibility: visible !important;
-        background-color: #fbbf24 !important; /* Belirgin olması için arı sarısı */
-        color: #000000 !important; /* Ok işaretinin rengi siyah */
-        border-radius: 4px;
-        padding: 4px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-# Safari'nin Streamlit sunucusundan etkilenmesini engelleyen kesin yönlendirme
-pwa_final_html = """
-<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
-<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
-<link rel="apple-touch-icon" sizes="76x76" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
-<link rel="apple-touch-icon" sizes="120x120" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
-<link rel="apple-touch-icon" sizes="152x152" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
-<link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="WorkBee">
-"""
-
-# HTML etiketlerini enjekte ediyoruz
-st.markdown(pwa_final_html, unsafe_allow_html=True)
 
 
 # MongoDB Bağlantı Kurulumu - GÜVENLİ YÖNTEM
