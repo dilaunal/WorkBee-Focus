@@ -25,6 +25,22 @@ st.set_page_config(
     page_title="WorkBee Focus", page_icon="WorkBeeAppIcon.png", layout="wide"
 )
 
+# Streamlit'in tüm tarayıcı kalabalığını gizleyen özel CSS enjeksiyonu
+st.markdown(
+    """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    .stAppDeployDropdown {display: none !important;}
+    [data-testid="stDecoration"] {display: none !important;}
+    [data-testid="stToolbar"] {display: none !important;}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
 # Safari'nin Streamlit sunucusundan etkilenmesini engelleyen kesin yönlendirme
 pwa_final_html = """
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
