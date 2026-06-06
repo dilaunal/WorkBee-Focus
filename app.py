@@ -317,32 +317,6 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("💡 **İpucu:** Düzenli molalar verimliliğini artırır!")
 
-    st.header("Mobil Uygulama")
-    pwa_install_script = """
-    <script>
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        window.deferredPrompt = e;
-    });
-
-    function installApp() {
-        const promptEvent = window.deferredPrompt;
-        if (promptEvent) {
-            promptEvent.prompt();
-            promptEvent.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('Kullanıcı uygulamayı kurmayı kabul etti.');
-                }
-                window.deferredPrompt = null;
-            });
-        }
-    }
-    </script>
-    <button onclick="installApp()" style="width: 100%; padding:10px; background-color:#fbbf24; color:#000; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">
-      📱 Cihaza Kur
-    </button>
-    """
-    st.markdown(pwa_install_script, unsafe_allow_html=True)
 
 
 # --- 6. KULLANICI GİRİŞ KONTROLÜ ---
