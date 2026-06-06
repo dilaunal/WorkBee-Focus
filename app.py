@@ -27,6 +27,12 @@ st.set_page_config(
     layout="wide"
 )
 
+st.markdown("""
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#fbbf24">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
+""", unsafe_allow_html=True)
+
 
 # MongoDB Bağlantı Kurulumu - GÜVENLİ YÖNTEM
 @st.cache_resource
