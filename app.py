@@ -25,16 +25,19 @@ st.set_page_config(
     page_title="WorkBee Focus", page_icon="WorkBeeAppIcon.png", layout="wide"
 )
 
-# Streamlit'in tüm tarayıcı kalabalığını gizleyen özel CSS enjeksiyonu
 st.markdown(
     """
     <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
+    /* Üst menü butonlarını ve Streamlit logosunu gizle */
     .stAppDeployDropdown {display: none !important;}
     [data-testid="stDecoration"] {display: none !important;}
     [data-testid="stToolbar"] {display: none !important;}
+    footer {visibility: hidden;}
+    
+    /* Sol menünün (Sidebar) görünür ve erişilebilir kalmasını sağla */
+    [data-testid="stSidebar"] {
+        visibility: visible !important;
+    }
     </style>
     """,
     unsafe_allow_html=True
