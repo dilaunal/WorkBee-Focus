@@ -1,23 +1,20 @@
 {
   "short_name": "WorkBee",
-  "name": "WorkBee Focus: AI-Powered Task Management",
+  "name": "WorkBee Focus",
   "icons": [
     {
-      "src": "WorkBeeAppIcon.png",
-      "type": "image/png",
+      "src": "https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png",
       "sizes": "192x192",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
-      "src": "WorkBeeAppIcon.png",
-      "type": "image/png",
+      "src": "https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png",
       "sizes": "512x512",
-      "purpose": "any"
+      "type": "image/png"
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
+  "start_url": "/",
+  "background_color": "#ffffff",
   "theme_color": "#fbbf24",
-  "background_color": "#020617"
+  "display": "standalone"
 }
- 

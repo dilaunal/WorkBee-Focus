@@ -25,38 +25,17 @@ st.set_page_config(
     layout="wide"
 )
 
-# Safari'nin beynini yıkayacak kesin PWA enjeksiyon kodu
-def patch_streamlit_head():
-    try:
-        # Bilgisayarındaki veya Streamlit Cloud'daki resmi index.html dosyasının yolunu buluyoruz
-        streamlit_dir = os.path.dirname(st.__file__)
-        index_path = os.path.join(streamlit_dir, "static", "index.html")
-        
-        if os.path.exists(index_path):
-            with open(index_path, "r", encoding="utf-8") as f:
-                html_content = f.read()
-            
-            # Enjekte edilecek gerçek ve sarsılmaz meta etiketleri
-            pwa_tags = """
-            <link rel="apple-touch-icon" sizes="192x192" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
-            <link rel="apple-touch-icon" sizes="512x512" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
-            <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
-            <meta name="apple-mobile-web-app-capable" content="yes">
-            <meta name="apple-mobile-web-app-status-bar-style" content="default">
-            <meta name="apple-mobile-web-app-title" content="WorkBee">
-            <title>WorkBee Focus</title>
-            """
-            
-            # Eğer kod daha önce eklenmediyse <head> etiketinin hemen altına ekle
-            if "WorkBee" not in html_content:
-                patched_content = html_content.replace("<head>", f"<head>{pwa_tags}")
-                with open(index_path, "w", encoding="utf-8") as f:
-                    f.write(patched_content)
-    except Exception as e:
-        pass
-
-# Fonksiyonu hemen çalıştırıyoruz
-patch_streamlit_head()
+# Tarayıcıya manifest dosyamızın yerini gösteriyoruz
+st.markdown(
+    """
+    <link rel="manifest" href="./static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="WorkBee">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
+    """,
+    unsafe_allow_html=True
+)
 
 # MongoDB Bağlantı Kurulumu - GÜVENLİ YÖNTEM
 @st.cache_resource
