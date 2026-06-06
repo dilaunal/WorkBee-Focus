@@ -28,21 +28,31 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* Üst menü butonlarını ve Streamlit logosunu gizle */
+    /* Üst dekorasyon çizgisini ve sağ üstteki Deploy/Toolbar menülerini tamamen uçur */
+    [data-testid="stHeader"] {display: none !important;}
     .stAppDeployDropdown {display: none !important;}
     [data-testid="stDecoration"] {display: none !important;}
     [data-testid="stToolbar"] {display: none !important;}
-    footer {visibility: hidden;}
+    footer {visibility: hidden !important;}
     
-    /* Sol menünün (Sidebar) görünür ve erişilebilir kalmasını sağla */
+    /* SOL MENÜ (SIDEBAR) İÇİN KESİN GÖRÜNÜRLÜK KURALLARI */
+    /* Sidebar'ın ana taşıyıcısını zorla görünür yap */
     [data-testid="stSidebar"] {
+        display: flex !important;
         visibility: visible !important;
+    }
+    
+    /* Mobilde sidebar'ı açıp kapatan o küçük ok butonunu zorla görünür yap */
+    [data-testid="stSidebarCollapsedControl"] {
+        display: flex !important;
+        visibility: visible !important;
+        background-color: #fbbf24 !important; /* Arı sarısı yaparak mobilde belirginleştirdik */
+        border-radius: 5px;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
-
 
 # Safari'nin Streamlit sunucusundan etkilenmesini engelleyen kesin yönlendirme
 pwa_final_html = """
