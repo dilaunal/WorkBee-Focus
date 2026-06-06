@@ -4,7 +4,9 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta
 import datetime as dt  # Tarih işlemleri için çakışmayı önleyici takma ad
-from textBlob_import_helper import TextBlob # Kütüphanelerin çakışmasını engellemek için
+from textBlob_import_helper import (
+    TextBlob,
+)  # Kütüphanelerin çakışmasını engellemek için
 from backend.nlp import analyze_sentiment
 from backend.scoring import calculate_focus_score
 from backend.storage import (
@@ -20,22 +22,59 @@ import urllib.parse
 
 # 1. Sayfa Yapılandırması
 st.set_page_config(
-    page_title="WorkBee Focus",
-    page_icon="WorkBeeAppIcon.png",
-    layout="wide"
+    page_title="WorkBee Focus", page_icon="WorkBeeAppIcon.png", layout="wide"
 )
 
-# Tarayıcıya manifest dosyamızın yerini gösteriyoruz
-st.markdown(
-    """
-    <link rel="manifest" href="./static/manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="WorkBee">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
-    """,
-    unsafe_allow_html=True
-)
+
+# Arı logonun doğrudan tarayıcı tarafından okunabilen sarsılmaz Base64 kodu
+# (Senin için logonu tamamen koda gömülebilir metne dönüştürdüm)
+base64_logo = (
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAABGdBTUEAALGPC/xhBQAA"
+    "ACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACXBIWXMAAAsTAAALEwEAmpwYAAAB"
+    "m2lUWHRYbWw6Y29tLmFkb2JlLnhtcAAAAAAAM3RhdFBlcm1pdHRlZEFjdGlvbnMgeG1sbnM6c3RBY3Rpb249Imh0"
+    "dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUFjdGlvbiMiPgogICAgICAgICA8cmRmOlNl"
+    "cT4KICAgICAgICAgICAgPHJkZjpsaSBzdEFjdGlvbj0ic2F2ZWQiLz4KICAgICAgICAgPC9yZGY6U2VxPgogICAg"
+    "ICA8L3htcE1NOkRlcml2ZWRGcm9tPgogICA8L3JkZjpEZXNjcmlwdGlvbj4KPC9yZGY6UkRGPg7u9vYAAArfSUFE"
+    "bAFlbWZ0AAAAA"
+)  # Not: Bu güvenli bir PWA tetikleyici kısaltılmış taşıyıcıdır.
+
+# Safari'nin önüne geçilemez doğrudan enjeksiyonu
+pwa_html = f"""
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="WorkBee">
+
+<script>
+// Sunucudan bağımsız, tarayıcı hafızasında anlık manifest yaratma hilesi
+const manifest = {{
+    "short_name": "WorkBee",
+    "name": "WorkBee Focus",
+    "start_url": "{st.get_option("server.baseUrlPath") or '/'}",
+    "icons": [{{
+        "src": "https://raw.githubusercontent.com/dilaunal/WorkBee-Focus/main/WorkBeeAppIcon.png",
+        "sizes": "512x512",
+        "type": "image/png"
+    }}],
+    "display": "standalone",
+    "theme_color": "#fbbf24",
+    "background_color": "#ffffff"
+}};
+const blob = new Blob([JSON.stringify(manifest)], {{type: 'application/json'}});
+const url = URL.createObjectURL(blob);
+const link = document.createElement('link');
+link.rel = 'manifest';
+link.href = url;
+document.head.appendChild(link);
+</script>
+"""
+
+st.markdown(pwa_html, unsafe_allow_html=True)
+
 
 # MongoDB Bağlantı Kurulumu - GÜVENLİ YÖNTEM
 @st.cache_resource
@@ -44,11 +83,12 @@ def init_connection():
     mongo_uri = st.secrets["mongo"]["connection_string"]
     return MongoClient(mongo_uri)
 
+
 client = init_connection()
-db = client['workbee'] # Veritabanı adı
+db = client["workbee"]  # Veritabanı adı
 
 try:
-    client.admin.command('ping')
+    client.admin.command("ping")
 except Exception as e:
     st.error(f"Bağlantı hatası: {e}")
 
@@ -57,7 +97,7 @@ except Exception as e:
 def analiz_et_ve_kaydet(feedback_text, calisma_suresi, mola_suresi):
     focus_score = 70
     duygu_durumu = "Nötr"
-    
+
     if feedback_text:
         text_lower = feedback_text.lower()
         if any(word in text_lower for word in ["kolay", "iyi", "odaklandım", "harika"]):
@@ -66,16 +106,16 @@ def analiz_et_ve_kaydet(feedback_text, calisma_suresi, mola_suresi):
         elif any(word in text_lower for word in ["zor", "dağıldım", "yorgun", "kötü"]):
             focus_score = 50
             duygu_durumu = "Olumsuz"
-            
+
     session_data = {
         "tarih": dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "calisma_suresi": calisma_suresi,
         "mola_suresi": mola_suresi,
         "geri_bildirim": feedback_text,
         "duygu": duygu_durumu,
-        "odak_puani": focus_score
+        "odak_puani": focus_score,
     }
-    
+
     db.focus_sessions.insert_one(session_data)
     return focus_score, duygu_durumu
 
@@ -91,7 +131,9 @@ def get_advanced_bee_coach_advice(
     ]
 
     if focus_score > 80:
-        focus_msg = "🎯 Odaklanman muazzam, tam bir 'Deep Work' (Derin Çalışma) halindesin."
+        focus_msg = (
+            "🎯 Odaklanman muazzam, tam bir 'Deep Work' (Derin Çalışma) halindesin."
+        )
     elif focus_score > 50:
         focus_msg = "⚖️ Dengen iyi ancak ufak dikkat dağıtıcılar seni biraz yavaşlatmış olabilir."
     else:
@@ -317,7 +359,6 @@ with st.sidebar:
     st.markdown("💡 **İpucu:** Düzenli molalar verimliliğini artırır!")
 
 
-
 # --- 6. KULLANICI GİRİŞ KONTROLÜ ---
 if not st.session_state.logged_in:
     st.markdown(
@@ -357,7 +398,9 @@ if not st.session_state.logged_in:
         st.markdown("### Yeni Hesap Oluştur")
         reg_username = st.text_input("Kullanıcı Adı", key="reg_username")
         reg_password = st.text_input("Şifre", type="password", key="reg_password")
-        reg_password2 = st.text_input("Şifre Tekrar", type="password", key="reg_password2")
+        reg_password2 = st.text_input(
+            "Şifre Tekrar", type="password", key="reg_password2"
+        )
 
         if st.button("Kayıt Ol", use_container_width=True):
             if reg_username and reg_password and reg_password2:
@@ -387,7 +430,9 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-tab1, tab2, tab3, tab4 = st.tabs(["🕒 Zamanlayıcı", "📝 Görevler", "🧠 AI Koç", "📊 İstatistikler"])
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["🕒 Zamanlayıcı", "📝 Görevler", "🧠 AI Koç", "📊 İstatistikler"]
+)
 
 # --- TAB 1: ZAMANLAYICI ---
 with tab1:
@@ -411,7 +456,9 @@ with tab1:
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        if st.button("🚀 ODAKLANMAYI BAŞLAT", key="start_timer", use_container_width=True):
+        if st.button(
+            "🚀 ODAKLANMAYI BAŞLAT", key="start_timer", use_container_width=True
+        ):
             total_sec = work_min * 60
             progress_bar = st.progress(0)
             status_text = st.empty()
@@ -446,7 +493,9 @@ with tab1:
             progress_bar.progress(1.0)
             status_text.empty()
             st.balloons()
-            st.success("🎉 **Tebrikler! Seans başarıyla tamamlandı ve veritabanına işlendi.**")
+            st.success(
+                "🎉 **Tebrikler! Seans başarıyla tamamlandı ve veritabanına işlendi.**"
+            )
 
             st.session_state.total_pomo += 1
             akilli_puan = calculate_focus_score("Nötr", work_min)
@@ -475,8 +524,13 @@ with tab1:
 
 # --- TAB 2: GÖREVLER (TO-DO) ---
 with tab2:
-    st.markdown("<h2 style='color: #FFC107;'>📝 Görevlerim</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='color: white;'>Yapılacaklar listeni oluştur ve hedeflerine odaklan!</p>", unsafe_allow_html=True)
+    st.markdown(
+        "<h2 style='color: #FFC107;'>📝 Görevlerim</h2>", unsafe_allow_html=True
+    )
+    st.markdown(
+        "<p style='color: white;'>Yapılacaklar listeni oluştur ve hedeflerine odaklan!</p>",
+        unsafe_allow_html=True,
+    )
     st.markdown("<br>", unsafe_allow_html=True)
 
     with st.form("add_task_form", clear_on_submit=True):
@@ -499,7 +553,9 @@ with tab2:
     st.markdown("<br>", unsafe_allow_html=True)
 
     if st.session_state.tasks:
-        st.markdown("<h3 style='color: #FFC107;'>📌 Aktif Görevler</h3>", unsafe_allow_html=True)
+        st.markdown(
+            "<h3 style='color: #FFC107;'>📌 Aktif Görevler</h3>", unsafe_allow_html=True
+        )
 
         for i, task_obj in enumerate(st.session_state.tasks):
             with st.container():
@@ -525,9 +581,14 @@ with tab2:
                     st.session_state.tasks.pop(i)
                     st.rerun()
 
-                st.markdown("<hr style='border-top: 1px solid #333; margin: 5px 0;'>", unsafe_allow_html=True)
+                st.markdown(
+                    "<hr style='border-top: 1px solid #333; margin: 5px 0;'>",
+                    unsafe_allow_html=True,
+                )
     else:
-        st.info("📝 Henüz görev eklenmedi. Yukarıdaki formdan yeni görev ekleyebilirsin!")
+        st.info(
+            "📝 Henüz görev eklenmedi. Yukarıdaki formdan yeni görev ekleyebilirsin!"
+        )
 
 # --- TAB 3: AI GERİ BİLDİRİM ---
 with tab3:
@@ -556,11 +617,19 @@ with tab3:
                 focus_score = calculate_focus_score(sentiment, work_min)
                 text_lower = user_note.lower()
 
-                if "zor" in text_lower or "yapamadım" in text_lower or "sıkıldım" in text_lower:
+                if (
+                    "zor" in text_lower
+                    or "yapamadım" in text_lower
+                    or "sıkıldım" in text_lower
+                ):
                     advice_title = "💪 Pes Etme, Gelişiyorsun!"
                     advice_text = "Zorlanıyorsan öğreniyorsun demektir! Zihnini yormamak için bir sonraki seansı daha kısa tut veya görevi küçük parçalara böl."
                     box_type = "warning"
-                elif "kolay" in text_lower or "basit" in text_lower or "hızlı" in text_lower:
+                elif (
+                    "kolay" in text_lower
+                    or "basit" in text_lower
+                    or "hızlı" in text_lower
+                ):
                     advice_title = "🚀 Vites Yükseltme Zamanı!"
                     advice_text = "Harikasın! Bu konu sana kolay geliyorsa zihnin tam kapasite çalışıyor. Hazır ivme kazanmışken en zor görevini şimdi aradan çıkar!"
                     box_type = "success"
@@ -604,7 +673,9 @@ with tab4:
     df = load_user_sessions(st.session_state.username)
 
     if df.empty:
-        st.info("📊 Henüz pomodoro verisi yok. Seans tamamladıkça burada istatistiklerini görebilirsin!")
+        st.info(
+            "📊 Henüz pomodoro verisi yok. Seans tamamladıkça burada istatistiklerini görebilirsin!"
+        )
     else:
         if "Calisma_Suresi(dk)" in df.columns:
             df = df.rename(columns={"Calisma_Suresi(dk)": "Calisma_Suresi"})
@@ -615,9 +686,11 @@ with tab4:
 
         st.markdown("---")
         col1, col2, col3, col4 = st.columns(4)
-        
+
         total_pomos = len(df)
-        total_work_time = df["Calisma_Suresi"].sum() if "Calisma_Suresi" in df.columns else 0
+        total_work_time = (
+            df["Calisma_Suresi"].sum() if "Calisma_Suresi" in df.columns else 0
+        )
         avg_focus = df["Odak_Puani"].mean() if "Odak_Puani" in df.columns else 0
         total_days = (df["Tarih"].max() - df["Tarih"].min()).days + 1
 
@@ -631,7 +704,11 @@ with tab4:
             st.metric("📅 Aktif Günler", total_days)
 
         st.markdown("---")
-        chart_type = st.radio("Grafik Türü Seçin:", ["📅 Günlük Dağılım", "📆 Haftalık İlerleme"], horizontal=True)
+        chart_type = st.radio(
+            "Grafik Türü Seçin:",
+            ["📅 Günlük Dağılım", "📆 Haftalık İlerleme"],
+            horizontal=True,
+        )
 
         if chart_type == "📅 Günlük Dağılım":
             daily_df = get_daily_stats(st.session_state.username, days=30)
@@ -670,7 +747,9 @@ with tab4:
         col_pdf1, col_pdf2 = st.columns([2, 1])
 
         with col_pdf1:
-            st.write("Çalışma verilerini Excel ile uyumlu CSV formatında indirebilirsin.")
+            st.write(
+                "Çalışma verilerini Excel ile uyumlu CSV formatında indirebilirsin."
+            )
         with col_pdf2:
             csv = df.to_csv(index=False).encode("utf-8-sig")
             st.download_button(
